@@ -1,2 +1,2 @@
-# My-Bunny-
+# Bunny-
 For my bunny
