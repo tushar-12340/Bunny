@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Classified: For Your Eyes Only</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital@0;1&family=Montserrat:wght@200;400&display=swap" rel="stylesheet">
+    <style>
+        :root { --cream: #FDFBF7; --sage: #8E9775; --charcoal: #333333; }
+        body, html { background-color: var(--cream); color: var(--charcoal); font-family: 'Montserrat', sans-serif; margin: 0; padding: 0; overflow-x: hidden; }
+
+        #lockScreen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--cream); z-index: 1000;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            transition: 1.5s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+
+        input {
+            background: transparent; border: none; border-bottom: 1px solid var(--sage);
+            padding: 10px; font-family: 'Playfair Display', serif; font-style: italic;
+            text-align: center; font-size: 1.2rem; outline: none; margin-top: 20px; color: var(--charcoal);
+        }
+
+        .section { height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 20px; position: relative; }
+        
+        h1 { font-family: 'Playfair Display', serif; font-weight: 400; font-style: italic; font-size: 2.2rem; opacity: 0; transform: translateY(30px); transition: 1.2s ease-out; }
+        .visible h1 { opacity: 1; transform: translateY(0); }
+
+        .photo-container {
+            width: 280px; height: 380px; background: white; padding: 12px 12px 65px 12px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.1); margin-bottom: 30px;
+            opacity: 0; transform: scale(0.9) rotate(-3deg); transition: 1.5s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+        .visible .photo-container { opacity: 1; transform: scale(1) rotate(0deg); }
+        .photo-container img { width: 100%; height: 100%; object-fit: cover; }
+
+        .btn-group { margin-top: 40px; width: 100%; height: 150px; position: relative; }
+        button { padding: 14px 40px; border: 1px solid var(--sage); background: none; font-family: 'Montserrat', sans-serif; letter-spacing: 2px; text-transform: uppercase; font-size: 0.75rem; cursor: pointer; }
+        
+        #yesBtn { background: var(--sage); color: white; transition: 0.4s; z-index: 5; position: relative; }
+        #yesBtn:hover { transform: scale(1.1); letter-spacing: 4px; }
+
+        #noBtn { position: absolute; background: white; color: var(--sage); transition: 0.1s ease-out; white-space: nowrap; z-index: 1; }
+
+        #success {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--cream); z-index: 999; flex-direction: column;
+            justify-content: center; align-items: center; text-align: center; padding: 20px;
+        }
+
+        .blur { filter: blur(25px); pointer-events: none; transition: 2s filter ease; }
+    </style>
+</head>
+<body>
+
+    <div id="lockScreen">
+        <div style="font-size: 0.6rem; letter-spacing: 5px; text-transform: uppercase; color: #AAA;">Identity Verification</div>
+        <input type="text" id="passInput" placeholder="Password..." oninput="checkPass()">
+        <p style="font-size: 0.5rem; color: #CCC; margin-top: 20px;">Hint: Your nickname</p>
+    </div>
+
+    <div id="content" class="blur">
+        <div class="section">
+            <div class="photo-container">
+                <img src="https://i.ibb.co/ymq04nxc/IMG-20251228-WA0009.jpg">
+            </div>
+            <h1>Hello, Gorgeous.</h1>
+            <p style="font-size: 0.5rem; letter-spacing: 4px; color: #AAA;">SCROLL SLOWLY</p>
+        </div>
+
+        <div class="section">
+            <div class="photo-container" style="transform: rotate(4deg);">
+                <img src="https://i.ibb.co/836zZ1x/IMG-20250608-WA0002.jpg">
+            </div>
+            <h1>My favorite view.</h1>
+        </div>
+
+        <div class="section">
+            <div class="photo-container" style="transform: rotate(-4deg);">
+                <img src="https://i.ibb.co/rKpFwmXF/IMG-20250608-WA0007.jpg">
+            </div>
+            <h1>I have a question...</h1>
+        </div>
+
+        <div class="section" id="askSection">
+            <h1 style="font-style: normal; margin-bottom: 10px;">Will you be my Valentine?</h1>
+            <p style="font-weight: 200; font-size: 0.8rem; color: #777;">Don't even try to say no.</p>
+            <div class="btn-group">
+                <button id="yesBtn" onclick="showSuccess()">I'm yours</button>
+                <button id="noBtn" onmouseover="chaosNo()" onclick="chaosNo()">No</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="success">
+        <div style="font-size: 2rem; margin-bottom: 20px; color: var(--sage);">❦</div>
+        <h1 style="max-width: 90%; opacity:1; transform:none;">You're trapped with me forever now, sweetie.</h1>
+        <p style="font-weight: 200; font-style: italic; color: #777;">Just wait for a cute surprise...</p>
+    </div>
+
+    <script>
+        function checkPass() {
+            const input = document.getElementById('passInput').value.toLowerCase();
+            if (input === "my bunny") {
+                document.getElementById('lockScreen').style.opacity = "0";
+                setTimeout(() => {
+                    document.getElementById('lockScreen').style.display = "none";
+                    document.getElementById('content').classList.remove('blur');
+                }, 1500);
+            }
+        }
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) entry.target.classList.add('visible');
+            });
+        }, { threshold: 0.3 });
+
+        document.querySelectorAll('.section').forEach(section => observer.observe(section));
+
+        let noScale = 1;
+        let rotations = 0;
+        function chaosNo() {
+            const btn = document.getElementById('noBtn');
+            const x = Math.random() * (window.innerWidth - btn.offsetWidth - 100);
+            const y = Math.random() * (window.innerHeight - btn.offsetHeight - 100);
+            noScale = Math.max(noScale - 0.1, 0.2);
+            rotations += 120;
+            btn.style.left = Math.max(20, x) + 'px';
+            btn.style.top = Math.max(20, y) + 'px';
+            btn.style.transform = `scale(${noScale}) rotate(${rotations}deg)`;
+            btn.innerText = "Error";
+        }
+
+        function showSuccess() {
+            document.getElementById('success').style.display = 'flex';
+        }
+    </script>
+</body>
+</html>
